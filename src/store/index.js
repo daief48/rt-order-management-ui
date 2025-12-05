@@ -18,7 +18,6 @@ export const useAuthStore = defineStore('auth', {
     async login(payload) {
       const res = await axios.post('/login', payload)
       this.setToken(res.data.token)
-      // optionally fetch user info if API provides
     },
     async register(payload) {
       const res = await axios.post('/register', payload)
