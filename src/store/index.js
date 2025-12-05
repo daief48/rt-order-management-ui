@@ -1,14 +1,32 @@
-import { createStore } from 'vuex'
+import { defineStore } from 'pinia'
+import axios from '../services/api'
 
-export default createStore({
-  state: {
-  },
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    token: localStorage.getItem('token') || null,
+    user: null
+  }),
   getters: {
-  },
-  mutations: {
+    isAuthenticated: (state) => !!state.token
   },
   actions: {
-  },
-  modules: {
+    setToken(t) {
+      this.token = t
+      if (t) localStorage.setItem('token', t)
+      else localStorage.removeItem('token')
+    },
+    async login(payload) {
+      const res = await axios.post('/login', payload)
+      this.setToken(res.data.token)
+      // optionally fetch user info if API provides
+    },
+    async register(payload) {
+      const res = await axios.post('/register', payload)
+      this.setToken(res.data.token)
+    },
+    logout() {
+      this.setToken(null)
+      this.user = null
+    }
   }
 })
